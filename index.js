@@ -12,6 +12,9 @@ app.get('/ie/:path(*)', async (req, res) => {
     const path = req.params.path
     const query = req.query
 
+    const format = req.query.format || 'avif'
+    delete req.query.format;
+
     try {
         const response = await axios({
             method: 'get',
@@ -21,15 +24,15 @@ app.get('/ie/:path(*)', async (req, res) => {
 
         let imageData = response.data;
         let processedImage = await sharp(imageData)
-            .resize(500, 500)
-            .toFormat('jpeg')
+            // .resize(500, 500)
+            .toFormat(format)
             .toBuffer();
 
-        res.set('Content-Type', 'image/jpeg');
+        res.set('Content-Type', `image/${format}`);
         res.send(processedImage);
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred while retrieving the image');
+        res.status(404).send('An error occurred while retrieving the image');
     }
 });
 
