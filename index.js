@@ -1,19 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 
-const imgUrl = 'https://firebasestorage.googleapis.com/v0/b/mini-trips.appspot.com/o/trips%2Fexperience-the-cultural-diversity-of-india-at-bharat-parv-2023-at-the-iconic-red-fort-delhi-0?alt=media&token=7bcb358a-6054-46d7-bd45-1af039f974b0';
+function toQueryParams(obj) {
+    return Object.keys(obj).map(key => `${key}=${obj[key].trim()}`).join('&')
+}
 
+app.get('/ie/:path(*)', async (req, res) => {
+    const path = req.params.path
+    const query = req.query
 
-app.get('/image', async (req, res) => {
     try {
         const response = await axios({
             method: 'get',
-            url: imgUrl,
+            url: path + '?' + toQueryParams(query),
             responseType: 'arraybuffer'
         });
 
