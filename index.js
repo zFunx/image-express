@@ -14,6 +14,9 @@ app.get('/ie/:path(*)', async (req, res) => {
 
     const format = req.query.format || 'avif'
     delete req.query.format;
+    
+    const width = req.query.width || 368
+    delete req.query.width;
 
     try {
         const response = await axios({
@@ -24,7 +27,7 @@ app.get('/ie/:path(*)', async (req, res) => {
 
         let imageData = response.data;
         let processedImage = await sharp(imageData)
-            // .resize(500, 500)
+            .resize(width, null)
             .toFormat(format)
             .toBuffer();
 
